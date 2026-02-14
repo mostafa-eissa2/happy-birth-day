@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عيد ميلاد سعيد - 18 فبراير</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        /* استيراد خط كاييرو لضمان شكل احترافي */
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            overflow-x: hidden;
+            /* منع التمرير العرضي في الموبايل */
+        }
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 30px 20px;
+            border-radius: 25px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            width: 85%;
+            /* عرض مناسب للموبايل */
+            max-width: 450px;
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .profile-pic {
+            width: 130px;
+            /* تصغير الصورة قليلاً للموبايل */
+            height: 130px;
+            border-radius: 50%;
+            border: 5px solid #fff;
+            object-fit: cover;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.5);
+            }
+
+            70% {
+                box-shadow: 0 0 0 15px rgba(231, 76, 60, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(231, 76, 60, 0);
+            }
+        }
+
+        h1 {
+            color: #333;
+            margin: 20px 0;
+            font-size: 1.5rem;
+            /* حجم خط متناسب */
+            line-height: 1.4;
+        }
+
+        .timer-container {
+            display: grid;
+            /* استخدام Grid لترتيب أفضل */
+            grid-template-columns: repeat(2, 1fr);
+            /* مربعين في كل صف للموبايل */
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        /* للشاشات الأكبر من الموبايل (التابلت والكمبيوتر) */
+        @media (min-width: 400px) {
+            .timer-container {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .time-segment {
+            background: #2c3e50;
+            color: #fff;
+            padding: 12px 5px;
+            border-radius: 15px;
+            transition: 0.3s;
+        }
+
+        .time-segment span {
+            display: block;
+            font-size: 1.4rem;
+            font-weight: bold;
+        }
+
+        .time-segment label {
+            font-size: 0.75rem;
+            display: block;
+            margin-top: 4px;
+        }
+
+        #celebration-msg {
+            display: none;
+            font-size: 1.8rem;
+            color: #e73c7e;
+            font-weight: bold;
+            animation: bounce 1s infinite;
+            padding: 20px;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <div class="profile-wrapper">
+            <img src="hhh.jpeg" alt="بطوطة" class="profile-pic">
+        </div>
+
+        <div id="countdown-ui">
+            <h1>كل سنة وانتى طيبة يا بطوطتى 🎈</h1>
+            <div class="timer-container">
+                <div class="time-segment"><span id="days">00</span><label>أيام</label></div>
+                <div class="time-segment"><span id="hours">00</span><label>ساعة</label></div>
+                <div class="time-segment"><span id="mins">00</span><label>دقيقة</label></div>
+                <div class="time-segment"><span id="secs">00</span><label>ثانية</label></div>
+            </div>
+        </div>
+
+        <div id="celebration-msg">
+            كل عام وأنتِ بألف خير يا بطوطة! 🎉🎂
+        </div>
+    </div>
+
+    <script>
+        const targetDate = new Date("February 18, 2026 00:00:00").getTime();
+
+        function startCelebration() {
+            document.getElementById('countdown-ui').style.display = 'none';
+            document.getElementById('celebration-msg').style.display = 'block';
+
+            var duration = 15 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = {startVelocity: 30, spread: 360, ticks: 60, zIndex: 999};
+
+            function randomInRange(min, max) {return Math.random() * (max - min) + min;}
+
+            var interval = setInterval(function () {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+                var particleCount = 40 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, {particleCount, origin: {x: randomInRange(0.1, 0.3), y: Math.random() - 0.2}}));
+                confetti(Object.assign({}, defaults, {particleCount, origin: {x: randomInRange(0.7, 0.9), y: Math.random() - 0.2}}));
+            }, 250);
+        }
+
+        const timer = setInterval(function () {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance < 0) {
+                clearInterval(timer);
+                startCelebration();
+                return;
+            }
+
+            document.getElementById("days").innerText = Math.floor(distance / (1000 * 60 * 60 * 24));
+            document.getElementById("hours").innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            document.getElementById("mins").innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            document.getElementById("secs").innerText = Math.floor((distance % (1000 * 60)) / 1000);
+        }, 1000);
+    </script>
+
+</body>
+
+</html>
