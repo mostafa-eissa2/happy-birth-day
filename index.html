@@ -7,7 +7,6 @@
     <title>عيد ميلاد سعيد - 18 فبراير</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
-        /* استيراد خط كاييرو لضمان شكل احترافي */
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
 
         body {
@@ -22,7 +21,6 @@
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
             overflow-x: hidden;
-            /* منع التمرير العرضي في الموبايل */
         }
 
         @keyframes gradientBG {
@@ -47,9 +45,9 @@
             text-align: center;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
             width: 85%;
-            /* عرض مناسب للموبايل */
             max-width: 450px;
             animation: fadeIn 0.8s ease-out forwards;
+            position: relative;
         }
 
         @keyframes fadeIn {
@@ -66,7 +64,6 @@
 
         .profile-pic {
             width: 130px;
-            /* تصغير الصورة قليلاً للموبايل */
             height: 130px;
             border-radius: 50%;
             border: 5px solid #fff;
@@ -92,20 +89,16 @@
             color: #333;
             margin: 20px 0;
             font-size: 1.5rem;
-            /* حجم خط متناسب */
             line-height: 1.4;
         }
 
         .timer-container {
             display: grid;
-            /* استخدام Grid لترتيب أفضل */
             grid-template-columns: repeat(2, 1fr);
-            /* مربعين في كل صف للموبايل */
             gap: 10px;
             margin-top: 20px;
         }
 
-        /* للشاشات الأكبر من الموبايل (التابلت والكمبيوتر) */
         @media (min-width: 400px) {
             .timer-container {
                 grid-template-columns: repeat(4, 1fr);
@@ -117,7 +110,6 @@
             color: #fff;
             padding: 12px 5px;
             border-radius: 15px;
-            transition: 0.3s;
         }
 
         .time-segment span {
@@ -130,6 +122,29 @@
             font-size: 0.75rem;
             display: block;
             margin-top: 4px;
+        }
+
+        /* زر الموسيقى */
+        .music-control {
+            margin-top: 25px;
+            background: #e73c7e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Cairo';
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            transition: 0.3s;
+        }
+
+        .music-control:hover {
+            background: #333;
         }
 
         #celebration-msg {
@@ -170,6 +185,11 @@
                 <div class="time-segment"><span id="mins">00</span><label>دقيقة</label></div>
                 <div class="time-segment"><span id="secs">00</span><label>ثانية</label></div>
             </div>
+
+            <button class="music-control" id="musicBtn" onclick="toggleMusic()">
+                <span id="musicIcon">🎵</span>
+                <span id="musicText">شغلي يا بطوط 🎶</span>
+            </button>
         </div>
 
         <div id="celebration-msg">
@@ -177,12 +197,35 @@
         </div>
     </div>
 
+    <audio id="bgMusic" loop>
+        <source src="enty.mp3" type="audio/mpeg">
+    </audio>
+
     <script>
+        const audio = document.getElementById('bgMusic');
+        const btnText = document.getElementById('musicText');
+        const btnIcon = document.getElementById('musicIcon');
+
+        function toggleMusic() {
+            if (audio.paused) {
+                audio.play();
+                btnText.innerText = "إيقاف يا بطوط";
+                btnIcon.innerText = "⏸️";
+            } else {
+                audio.pause();
+                btnText.innerText = "شغلي يا بطوط 🎶";
+                btnIcon.innerText = "🎵";
+            }
+        }
+
         const targetDate = new Date("February 18, 2026 00:00:00").getTime();
 
         function startCelebration() {
             document.getElementById('countdown-ui').style.display = 'none';
             document.getElementById('celebration-msg').style.display = 'block';
+
+            // تشغيل الموسيقى تلقائياً عند بدء الاحتفال (المتصفح سيسمح بها لأن المستخدم تفاعل مع الصفحة)
+            audio.play();
 
             var duration = 15 * 1000;
             var animationEnd = Date.now() + duration;
@@ -215,7 +258,6 @@
             document.getElementById("secs").innerText = Math.floor((distance % (1000 * 60)) / 1000);
         }, 1000);
     </script>
-
 </body>
 
 </html>
