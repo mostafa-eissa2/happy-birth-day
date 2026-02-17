@@ -20,7 +20,7 @@
             background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
-            overflow-x: hidden;
+            overflow: hidden;
         }
 
         @keyframes gradientBG {
@@ -46,20 +46,8 @@
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
             width: 85%;
             max-width: 450px;
-            animation: fadeIn 0.8s ease-out forwards;
+            z-index: 10;
             position: relative;
-        }
-
-        @keyframes fadeIn {
-            from {
-                transform: translateY(20px);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
         }
 
         .profile-pic {
@@ -83,13 +71,6 @@
             100% {
                 box-shadow: 0 0 0 0 rgba(231, 76, 60, 0);
             }
-        }
-
-        h1 {
-            color: #333;
-            margin: 20px 0;
-            font-size: 1.5rem;
-            line-height: 1.4;
         }
 
         .timer-container {
@@ -124,7 +105,6 @@
             margin-top: 4px;
         }
 
-        /* زر الموسيقى */
         .music-control {
             margin-top: 25px;
             background: #e73c7e;
@@ -133,18 +113,52 @@
             padding: 10px 20px;
             border-radius: 50px;
             cursor: pointer;
-            font-family: 'Cairo';
             font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
             width: 100%;
-            transition: 0.3s;
         }
 
-        .music-control:hover {
-            background: #333;
+        /* ستايل رسائل الحب (Pop-up) */
+        .love-popup {
+            position: fixed;
+            background: white;
+            color: #e73c7e;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            font-weight: bold;
+            z-index: 100;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: popShow 3s ease-in-out forwards;
+            white-space: nowrap;
+        }
+
+        @keyframes popShow {
+            0% {
+                transform: scale(0) translateY(0);
+                opacity: 0;
+            }
+
+            20% {
+                transform: scale(1.1) translateY(-20px);
+                opacity: 1;
+            }
+
+            80% {
+                transform: scale(1) translateY(-40px);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(0.8) translateY(-60px);
+                opacity: 0;
+            }
         }
 
         #celebration-msg {
@@ -153,19 +167,6 @@
             color: #e73c7e;
             font-weight: bold;
             animation: bounce 1s infinite;
-            padding: 20px;
-        }
-
-        @keyframes bounce {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-10px);
-            }
         }
     </style>
 </head>
@@ -178,7 +179,7 @@
         </div>
 
         <div id="countdown-ui">
-            <h1>كل سنة وانتى طيبة يا بطوطتى 🎈</h1>
+            <h1>كل سنة بتبقى احلى من السنة اللى قبلها💖💖</h1>
             <div class="timer-container">
                 <div class="time-segment"><span id="days">00</span><label>أيام</label></div>
                 <div class="time-segment"><span id="hours">00</span><label>ساعة</label></div>
@@ -204,17 +205,49 @@
     <script>
         const audio = document.getElementById('bgMusic');
         const btnText = document.getElementById('musicText');
-        const btnIcon = document.getElementById('musicIcon');
+
+        // قائمة رسائل الحب
+        const loveMessages = [
+            "أحلى واحدة في الدنيا ❤️",
+            "يا بختي بيكي يا بطوط 🧸",
+            "ضحكتك منورة حياتي ✨",
+            "أجمل نصيب في العمر 🌹",
+            "كل ثانية وإنتي حبيبتي 💖",
+            "مستني عيد ميلادك أكتر منك 🎈",
+            "إنتي ملكة قلبي 👑",
+            "وجودك هو العيد أصلاً 🥰"
+        ];
+
+        // وظيفة إظهار الرسائل العشوائية
+        function createLovePopup() {
+            const popup = document.createElement('div');
+            popup.className = 'love-popup';
+            const randomMsg = loveMessages[Math.floor(Math.random() * loveMessages.length)];
+            popup.innerHTML = `<span>💝</span> ${randomMsg}`;
+
+            // تحديد مكان عشوائي للظهور
+            const x = Math.random() * (window.innerWidth - 200);
+            const y = Math.random() * (window.innerHeight - 100);
+
+            popup.style.left = x + 'px';
+            popup.style.top = y + 'px';
+
+            document.body.appendChild(popup);
+
+            // مسح العنصر بعد انتهاء الأنيميشن
+            setTimeout(() => popup.remove(), 3000);
+        }
+
+        // إظهار رسالة كل ثانيتين
+        setInterval(createLovePopup, 2500);
 
         function toggleMusic() {
             if (audio.paused) {
                 audio.play();
                 btnText.innerText = "إيقاف يا بطوط";
-                btnIcon.innerText = "⏸️";
             } else {
                 audio.pause();
                 btnText.innerText = "شغلي يا بطوط 🎶";
-                btnIcon.innerText = "🎵";
             }
         }
 
@@ -223,16 +256,12 @@
         function startCelebration() {
             document.getElementById('countdown-ui').style.display = 'none';
             document.getElementById('celebration-msg').style.display = 'block';
-
-            // تشغيل الموسيقى تلقائياً عند بدء الاحتفال (المتصفح سيسمح بها لأن المستخدم تفاعل مع الصفحة)
             audio.play();
-
+            // ... (نفس كود الـ confetti السابق) ...
             var duration = 15 * 1000;
             var animationEnd = Date.now() + duration;
             var defaults = {startVelocity: 30, spread: 360, ticks: 60, zIndex: 999};
-
             function randomInRange(min, max) {return Math.random() * (max - min) + min;}
-
             var interval = setInterval(function () {
                 var timeLeft = animationEnd - Date.now();
                 if (timeLeft <= 0) return clearInterval(interval);
@@ -245,13 +274,11 @@
         const timer = setInterval(function () {
             const now = new Date().getTime();
             const distance = targetDate - now;
-
             if (distance < 0) {
                 clearInterval(timer);
                 startCelebration();
                 return;
             }
-
             document.getElementById("days").innerText = Math.floor(distance / (1000 * 60 * 60 * 24));
             document.getElementById("hours").innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             document.getElementById("mins").innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
