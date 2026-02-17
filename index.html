@@ -20,7 +20,9 @@
             background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
-            overflow: hidden;
+            /* تم تفعيل السكرول العمودي لضمان عمله على الموبايلات الصغيرة */
+            overflow-y: auto;
+            overflow-x: hidden;
         }
 
         @keyframes gradientBG {
@@ -40,21 +42,26 @@
         .card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            padding: 30px 20px;
-            border-radius: 25px;
+            padding: 20px 15px;
+            /* تصغير البادينج */
+            border-radius: 20px;
             text-align: center;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            width: 85%;
-            max-width: 450px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 88%;
+            max-width: 400px;
+            /* تصغير عرض الكارت */
             z-index: 10;
             position: relative;
+            margin: 20px 0;
+            /* مساحة للسكرول */
         }
 
         .profile-pic {
-            width: 130px;
-            height: 130px;
+            width: 110px;
+            /* تصغير الصورة */
+            height: 110px;
             border-radius: 50%;
-            border: 5px solid #fff;
+            border: 4px solid #fff;
             object-fit: cover;
             animation: pulse 2s infinite;
         }
@@ -65,7 +72,7 @@
             }
 
             70% {
-                box-shadow: 0 0 0 15px rgba(231, 76, 60, 0);
+                box-shadow: 0 0 0 12px rgba(231, 76, 60, 0);
             }
 
             100% {
@@ -73,100 +80,117 @@
             }
         }
 
-        .timer-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-top: 20px;
+        h1 {
+            color: #333;
+            margin: 15px 0;
+            font-size: 1.2rem;
+            /* تصغير حجم الخط */
+            line-height: 1.3;
         }
 
-        @media (min-width: 400px) {
-            .timer-container {
-                grid-template-columns: repeat(4, 1fr);
-            }
+        .timer-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            /* جعلهم صف واحد دائم بمقاس أصغر */
+            gap: 5px;
+            margin-top: 15px;
         }
 
         .time-segment {
             background: #2c3e50;
             color: #fff;
-            padding: 12px 5px;
-            border-radius: 15px;
+            padding: 8px 2px;
+            border-radius: 10px;
         }
 
         .time-segment span {
             display: block;
-            font-size: 1.4rem;
+            font-size: 1.1rem;
             font-weight: bold;
         }
 
         .time-segment label {
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             display: block;
-            margin-top: 4px;
+            margin-top: 2px;
         }
 
         .music-control {
-            margin-top: 25px;
+            margin-top: 20px;
             background: #e73c7e;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 8px 15px;
             border-radius: 50px;
             cursor: pointer;
             font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
             width: 100%;
+            font-size: 0.9rem;
         }
 
-        /* ستايل رسائل الحب (Pop-up) */
+        /* ستايل رسائل الحب (Pop-up) بشكل أصغر */
         .love-popup {
             position: fixed;
             background: white;
             color: #e73c7e;
-            padding: 15px 25px;
+            padding: 10px 18px;
             border-radius: 50px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             font-weight: bold;
+            font-size: 0.85rem;
             z-index: 100;
             pointer-events: none;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             animation: popShow 3s ease-in-out forwards;
             white-space: nowrap;
         }
 
         @keyframes popShow {
             0% {
-                transform: scale(0) translateY(0);
+                transform: scale(0);
                 opacity: 0;
             }
 
             20% {
-                transform: scale(1.1) translateY(-20px);
+                transform: scale(1);
                 opacity: 1;
             }
 
             80% {
-                transform: scale(1) translateY(-40px);
+                transform: scale(1);
                 opacity: 1;
             }
 
             100% {
-                transform: scale(0.8) translateY(-60px);
+                transform: scale(0.5) translateY(-50px);
                 opacity: 0;
             }
         }
 
         #celebration-msg {
             display: none;
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             color: #e73c7e;
             font-weight: bold;
             animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
         }
     </style>
 </head>
@@ -206,7 +230,6 @@
         const audio = document.getElementById('bgMusic');
         const btnText = document.getElementById('musicText');
 
-        // قائمة رسائل الحب
         const loveMessages = [
             "أحلى واحدة في الدنيا ❤️",
             "يا بختي بيكي يا بطوط 🧸",
@@ -218,27 +241,23 @@
             "وجودك هو العيد أصلاً 🥰"
         ];
 
-        // وظيفة إظهار الرسائل العشوائية
         function createLovePopup() {
             const popup = document.createElement('div');
             popup.className = 'love-popup';
             const randomMsg = loveMessages[Math.floor(Math.random() * loveMessages.length)];
             popup.innerHTML = `<span>💝</span> ${randomMsg}`;
 
-            // تحديد مكان عشوائي للظهور
-            const x = Math.random() * (window.innerWidth - 200);
+            // توزيع عشوائي أضيق ليناسب الموبايل
+            const x = Math.random() * (window.innerWidth - 150);
             const y = Math.random() * (window.innerHeight - 100);
 
             popup.style.left = x + 'px';
             popup.style.top = y + 'px';
 
             document.body.appendChild(popup);
-
-            // مسح العنصر بعد انتهاء الأنيميشن
             setTimeout(() => popup.remove(), 3000);
         }
 
-        // إظهار رسالة كل ثانيتين
         setInterval(createLovePopup, 2500);
 
         function toggleMusic() {
@@ -257,7 +276,7 @@
             document.getElementById('countdown-ui').style.display = 'none';
             document.getElementById('celebration-msg').style.display = 'block';
             audio.play();
-            // ... (نفس كود الـ confetti السابق) ...
+
             var duration = 15 * 1000;
             var animationEnd = Date.now() + duration;
             var defaults = {startVelocity: 30, spread: 360, ticks: 60, zIndex: 999};
